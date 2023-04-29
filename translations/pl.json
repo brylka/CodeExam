@@ -1,0 +1,17 @@
+{
+    "navbar_brand": "SprawdzianKodu",
+    "user_dropdown_logout": "Wyloguj",
+    "run_code_button": "Uruchom kod",
+    "html_output_label": "HTML",
+    "text_output_label": "Tekst",
+    "modal_title": "Informacja",
+    "modal_text": "Nie można kopiować ani wklejać zawartości w okienku z kodem.",
+    "modal_close": "Zamknij",
+    "review_link": "Przejrzyj",
+    "generate_pdf_link": "Generuj PDF",
+    "review_title": "Ocena Postępów Ucznia",
+    "login_title": "Logowanie",
+    "login_username": "Nazwa użytkownika:",
+    "login_password": "Hasło:",
+    "login_button": "Zaloguj"
+}
