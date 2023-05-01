@@ -5,4 +5,3 @@ if (file_exists('work/current.php')) {
 } else {
     echo '';
 }
-?>
