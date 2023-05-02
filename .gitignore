@@ -1,2 +1,3 @@
 /fpdf/
-/work/
+/work/*
+!work/.htaccess

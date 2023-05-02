@@ -1,12 +1,15 @@
 <?php
-    if (isset($_POST['code'])) {
+    if (isset($_POST['code']) && isset($_POST['username'])) {
         $code = $_POST['code'];
-        $isStudent = isset($_POST['isStudent']) && $_POST['isStudent'] === 'true';
+        $username = $_POST['username'];
+        $studentPath = "work/{$username}";
 
-        if ($isStudent) {
-            file_put_contents("work/current.php", $code);
-
-            $timestamp = time();
-            file_put_contents("work/{$timestamp}", $code);
+        if (!file_exists($studentPath)) {
+            mkdir($studentPath);
         }
+
+        file_put_contents("{$studentPath}/current.php", $code);
+
+        $timestamp = time();
+        file_put_contents("{$studentPath}/{$timestamp}", $code);
     }

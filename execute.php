@@ -9,8 +9,19 @@
 		return false;
 	}
 
-	// Wczytaj kod z pliku saved_code.php
-	$code = file_get_contents('work/current.php');
+    // Pobierz identyfikator ucznia
+    $student_id = isset($_POST['username']) ? $_POST['username'] : $_COOKIE['username'];
+
+    // Wczytaj kod z pliku current.php w katalogu ucznia
+    $student_directory = "work/{$student_id}";
+    $code_file = "{$student_directory}/current.php";
+
+    if (!file_exists($code_file)) {
+        echo "Plik current.php nie istnieje dla tego ucznia!";
+        exit();
+    }
+
+    $code = file_get_contents($code_file);
 
 	// Ogranicz dozwolone funkcje
 	$disallowed_functions = [
@@ -32,10 +43,8 @@
 
     // Wykonaj kod PHP
     ob_start();
-    include 'work/current.php';
+    include $code_file;
     $output = ob_get_contents();
     ob_end_clean();
 
     echo $output;
-
-?>

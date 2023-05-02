@@ -1,9 +1,19 @@
 <?php
-    $dir = "work/";
-    $files = array_diff(scandir($dir), array(".", "..", "current.php"));
+    // Pobierz identyfikator wybranego ucznia
+    $student_id = isset($_GET['student_id']) ? $_GET['student_id'] : null;
 
-    $timestamps = array_filter($files, function ($file) {
-        return preg_match("/^\d+$/", $file);
-    });
+    // Upewnij się, że $student_id został ustawiony
+    if ($student_id) {
+        // Zmieniamy katalog na katalog ucznia
+        $dir = "work/{$student_id}/";
+        $files = array_diff(scandir($dir), array(".", "..", "current.php"));
 
-    echo json_encode(array_values($timestamps));
+        $timestamps = array_filter($files, function ($file) {
+            return preg_match("/^\d+$/", $file);
+        });
+
+        echo json_encode(array_values($timestamps));
+    } else {
+        http_response_code(400);
+        echo "Invalid student ID.";
+    }

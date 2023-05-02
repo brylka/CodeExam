@@ -77,13 +77,23 @@ if (!isset($_COOKIE['userType']) || !isset($_COOKIE['username'])) {
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <?php
+                if (isTeacher()) {
+                    $student_directories = get_student_directories();
+                    foreach ($student_directories as $student_directory) {
+                        echo "<li class='nav-item'><a href='#' class='nav-link student-directory' data-student-id='{$student_directory}'>{$student_directory}</a></li>";
+                    }
+                }
+                ?>
+            </ul>
             <ul class="navbar-nav ml-auto">
-				<li class="nav-item">
-					<select class="custom-select" id="languageSelector">
-						<option value="en">English</option>
-						<option value="pl">Polski</option>
-					</select>
-				</li>
+                <li class="nav-item">
+                    <select class="custom-select" id="languageSelector">
+                        <option value="en">English</option>
+                        <option value="pl">Polski</option>
+                    </select>
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <?php echo $_COOKIE['username']; ?>
@@ -101,7 +111,7 @@ if (!isset($_COOKIE['userType']) || !isset($_COOKIE['username'])) {
             <div class="col-md-9">
                 <div id="code"></div>
                 <div class="mt-3">
-                    <button id="run-code" class="btn btn-primary"></button>
+                    <button id="run-code" data-student-id="" class="btn btn-primary">Run Code</button>
                     <div class="form-check form-check-inline ml-3">
                         <input class="form-check-input" type="radio" name="outputType" id="htmlOutput" value="html" checked>
                         <label class="form-check-label" for="htmlOutput">HTML</label>
@@ -111,8 +121,8 @@ if (!isset($_COOKIE['userType']) || !isset($_COOKIE['username'])) {
                         <label class="form-check-label" for="textOutput">Text</label>
                     </div>
                     <?php if (isTeacher()): ?>
-                        <a href="review.php" class="mr-3">Review</a>
-                        <a href="generate_pdf.php" class="mr-3">Generate PDF</a>
+                        <a href="review.php" id="review-link" class="mr-3">Review</a>
+                        <a href="generate_pdf.php" id="generate-pdf-link" class="mr-3">Generate PDF</a>
                     <?php endif; ?>
                 </div>
                 <div class="mt-3">
@@ -133,10 +143,25 @@ if (!isset($_COOKIE['userType']) || !isset($_COOKIE['username'])) {
 </body>
 </html>
 <?php
-function isTeacher() {
-    if (isset($_COOKIE['userType']) && $_COOKIE['userType'] === 'teacher') {
-        return true;
+    function get_student_directories() {
+        $work_dir = 'work';
+        $student_directories = [];
+
+        if ($handle = opendir($work_dir)) {
+            while (false !== ($entry = readdir($handle))) {
+                if ($entry != "." && $entry != ".." && is_dir("{$work_dir}/{$entry}")) {
+                    $student_directories[] = $entry;
+                }
+            }
+            closedir($handle);
+        }
+        return $student_directories;
     }
-    return false;
-}
+
+    function isTeacher() {
+        if (isset($_COOKIE['userType']) && $_COOKIE['userType'] === 'teacher') {
+            return true;
+        }
+        return false;
+    }
 ?>

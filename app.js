@@ -1,4 +1,7 @@
 $(document).ready(function () {
+
+	var selectedStudent = "";
+
 	// Inicjalizuj edytor CodeMirror
 	const codeEditor = CodeMirror(document.getElementById("code"), {
 		mode: "php",
@@ -44,7 +47,7 @@ $(document).ready(function () {
 		event.preventDefault();
 		showModal();
 	});
-	
+
 	function saveCodeToServer(code, isStudent) {
 		if (isStudent) {
 			$.ajax({
@@ -52,7 +55,7 @@ $(document).ready(function () {
 				url: "save_code.php",
 				data: {
 					code: code,
-					isStudent: isStudent
+					username: getUsername(),
 				},
 				success: function () {
 					console.log("Code saved");
@@ -65,21 +68,31 @@ $(document).ready(function () {
 	}
 
 	function updateCodeFromServer(loadOnceForStudent) {
+		var requestUrl = '';
+
 		if (isTeacher() || loadOnceForStudent) {
-			$.ajax({
-				type: "GET",
-				url: "get_code.php",
-				success: function (response) {
-					const currentCode = codeEditor.getValue();
-					if (response !== currentCode) {
-						codeEditor.setValue(response);
-					}
-				},
-				error: function () {
-					alert("An error occurred");
-				},
-			});
+			if (selectedStudent !== "") {
+				requestUrl = 'get_code.php?username=' + selectedStudent;
+			} else {
+				return;
+			}
+		} else if (!isTeacher()) {
+			requestUrl = 'get_code.php?username=' + getUsername();
 		}
+
+		$.ajax({
+			type: "GET",
+			url: requestUrl,
+			success: function(response) {
+				const currentCode = codeEditor.getValue();
+				if (response !== currentCode) {
+					codeEditor.setValue(response);
+				}
+			},
+			error: function() {
+				alert("An error occurred");
+			}
+		});
 	}
 
     setInterval(updateCodeFromServer, 1000);
@@ -92,11 +105,14 @@ $(document).ready(function () {
 	$("#run-code").click(function () {
 		const code = codeEditor.getValue();
 		const outputType = $("input[name='outputType']:checked").val();
+		const selectedStudentId = $(this).data('student-id');
+		const url = "execute.php";
+		const data = selectedStudentId ? { code: code, username: selectedStudentId } : { code: code };
 
 		$.ajax({
 			type: "POST",
-			url: "execute.php",
-			data: { code: code },
+			url: url,
+			data: data,
 			success: function (response) {
 				const iframe = document.getElementById("output");
 				const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
@@ -164,6 +180,41 @@ $(document).ready(function () {
 			},
 		});
 	}
+
+	function getUsername() {
+		const cookies = document.cookie.split("; ");
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i].split("=");
+			if (cookie[0] === "username") {
+				return cookie[1];
+			}
+		}
+		return "";
+	}
+
+	$('.student-directory').on('click', function(e) {
+		e.preventDefault();
+		selectedStudent = $(this).data('student-id');
+		var requestUrl = 'get_code.php?username=' + selectedStudent;
+
+		$('#run-code').data('student-id', selectedStudent);
+		$('#review-link').attr('href', 'review.php?student_id=' + selectedStudent);
+		$('#generate-pdf-link').attr('href', 'generate_pdf.php?username=' + selectedStudent);
+
+		$.ajax({
+			url: requestUrl,
+			type: 'GET',
+			success: function(response) {
+				const currentCode = codeEditor.getValue();
+				if (response !== currentCode) {
+					codeEditor.setValue(response);
+				}
+			},
+			error: function() {
+				alert('Wystąpił błąd podczas wczytywania kodu ucznia.');
+			}
+		});
+	});
 
 	if (isTeacher()) {
 		$('#taskContent').on('input', function () {

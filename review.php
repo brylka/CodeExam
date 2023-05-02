@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<?php $student_id = isset($_GET['student_id']) ? $_GET['student_id'] : null; ?><!DOCTYPE html>
 <html>
 <head>
     <title>Review Student Progress</title>
@@ -48,7 +48,7 @@
 
 
     <div class="container">
-        <h1 id="reviewTitle"></h1>
+        <h1 id="reviewTitle" data-student-id="<?php echo htmlspecialchars($student_id); ?>"></h1>
         <div>
             <input type="range" min="0" max="0" value="0" class="slider" id="versionSlider">
             <span id="versionDisplay"></span>
