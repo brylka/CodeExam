@@ -1,4 +1,7 @@
 <?php
+    require_once 'user_access.php';
+    redirectIfNotLoggedIn();
+
     if (isset($_GET['username'])) {
         $username = $_GET['username'];
         $studentPath = "work/{$username}";

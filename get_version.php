@@ -1,4 +1,8 @@
 <?php
+    require_once 'user_access.php';
+    redirectIfNotLoggedIn();
+    redirectIfNotTeacher();
+
     $student_id = isset($_GET['student_id']) ? $_GET['student_id'] : null;
     $timestamp = isset($_GET['timestamp']) ? $_GET['timestamp'] : null;
 

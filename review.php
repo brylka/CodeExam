@@ -1,4 +1,10 @@
-<?php $student_id = isset($_GET['student_id']) ? $_GET['student_id'] : null; ?><!DOCTYPE html>
+<?php
+    require_once 'user_access.php';
+    redirectIfNotLoggedIn();
+    redirectIfNotTeacher();
+
+    $student_id = isset($_GET['student_id']) ? $_GET['student_id'] : null;
+?><!DOCTYPE html>
 <html>
 <head>
     <title>Review Student Progress</title>

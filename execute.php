@@ -1,4 +1,8 @@
 <?php
+    require_once 'user_access.php';
+    redirectIfNotLoggedIn();
+
+    // Funkcja sprawdzająca, czy kod zawiera niedozwolone funkcje
 	function has_disallowed_function($code, $disallowed_functions) {
 		$tokens = token_get_all($code);
 		foreach ($tokens as $token) {
@@ -17,7 +21,7 @@
     $code_file = "{$student_directory}/current.php";
 
     if (!file_exists($code_file)) {
-        echo "Plik current.php nie istnieje dla tego ucznia!";
+        echo "The current.php file does not exist for this student!";
         exit();
     }
 
@@ -37,7 +41,7 @@
 	];
 
 	if (has_disallowed_function($code, $disallowed_functions)) {
-		echo "Niedozwolone funkcje użyte w kodzie!";
+		echo "Illegal functions used in the code!";
 		exit();
 	}
 

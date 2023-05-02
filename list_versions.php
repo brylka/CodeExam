@@ -1,4 +1,8 @@
 <?php
+    require_once 'user_access.php';
+    redirectIfNotLoggedIn();
+    redirectIfNotTeacher();
+
     // Pobierz identyfikator wybranego ucznia
     $student_id = isset($_GET['student_id']) ? $_GET['student_id'] : null;
 

@@ -1,6 +1,11 @@
 <?php
+    require_once 'user_access.php';
+    redirectIfNotLoggedIn();
+    redirectIfNotTeacher();
+
     require_once 'fpdf/fpdf.php';
 
+    // Funkcja zwracająca tablicę z timestampami wersji
     function getVersionsTimestamps($username)
     {
         $dir = "work/" . $username . "/";
@@ -13,6 +18,7 @@
         return array_values($timestamps);
     }
 
+    // Funkcja zwracająca zawartość wersji
     function getVersionContent($timestamp, $username)
     {
         $file_path = 'work/' . $username . '/' . $timestamp;

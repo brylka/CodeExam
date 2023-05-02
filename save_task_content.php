@@ -1,4 +1,8 @@
 <?php
+    require_once 'user_access.php';
+    redirectIfNotLoggedIn();
+    redirectIfNotTeacher();
+
     $task_file = 'task_content.txt';
 
     if (isset($_POST['content'])) {

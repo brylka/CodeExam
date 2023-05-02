@@ -1,8 +1,6 @@
 <?php
-if (!isset($_COOKIE['userType']) || !isset($_COOKIE['username'])) {
-    header("Location: login.php");
-    exit;
-}
+    require_once 'user_access.php';
+    redirectIfNotLoggedIn();
 ?><!DOCTYPE html>
 <html>
 <head>

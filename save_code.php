@@ -1,4 +1,7 @@
 <?php
+    require_once 'user_access.php';
+    redirectIfNotLoggedIn();
+
     if (isset($_POST['code']) && isset($_POST['username'])) {
         $code = $_POST['code'];
         $username = $_POST['username'];

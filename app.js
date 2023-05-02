@@ -63,7 +63,7 @@ $(document).ready(function () {
 					console.log("Code saved");
 				},
 				error: function () {
-					alert("An error occurred");
+					console.error("An error occurred");
 				},
 			});
 		}
@@ -71,10 +71,8 @@ $(document).ready(function () {
 
 	function updateCodeFromServer(loadOnceForStudent) {
 		var requestUrl = '';
-
 		if (isTeacher() || loadOnceForStudent) {
 			requestUrl = 'get_code.php?username=' + (selectedStudent !== "" ? selectedStudent : getUsername());
-
 			$.ajax({
 				type: "GET",
 				url: requestUrl,
@@ -85,7 +83,7 @@ $(document).ready(function () {
 					}
 				},
 				error: function () {
-					alert("An error occurred");
+					console.error("An error occurred");
 				}
 			});
 		}
@@ -121,15 +119,13 @@ $(document).ready(function () {
 					const preElement = `<pre>${escapedResponse}</pre>`;
 					iframeDoc.write(preElement);
 				}
-
 				iframeDoc.close();
 			},
 			error: function () {
-				alert("An error occurred");
+				console.error("An error occurred");
 			},
 		});
 	});
-
 
 	// Pobierz treść zadania
 	getTaskContent();
@@ -138,7 +134,6 @@ $(document).ready(function () {
 	$('#save-task').on('click', function () {
 		saveTaskContent();
 	});
-
 
 	// Pobierz treść zadania z serwera
 	function getTaskContent() {
@@ -150,7 +145,7 @@ $(document).ready(function () {
 				$('#taskContent').html(data);
 			},
 			error: function () {
-				console.error('Nie udało się pobrać treści zadania');
+				console.error('Failed to assign job content');
 			},
 		});
 	}
@@ -168,11 +163,11 @@ $(document).ready(function () {
 				if (response.status === 'success') {
 					$('#taskContent').css('background-color', '#ffffff');
 				} else {
-					console.error('Nie udało się zapisać treści zadania');
+					console.error('Failed to save job content');
 				}
 			},
 			error: function () {
-				console.error('Nie udało się zapisać treści zadania');
+				console.error('Failed to save job content');
 			},
 		});
 	}
@@ -207,7 +202,7 @@ $(document).ready(function () {
 				}
 			},
 			error: function() {
-				alert('Wystąpił błąd podczas wczytywania kodu ucznia.');
+				console.error('There was an error loading the student code');
 			}
 		});
 	});

@@ -15,8 +15,8 @@
             exit;
         }
 
-        setcookie("userType", $userType, time() + 3600*8); // Ważność: 1 godzina
-        setcookie("username", $username, time() + 3600*8); // Ważność: 1 godzina
+        setcookie("userType", $userType, time() + 3600*8); // Ważność: 8 godzin
+        setcookie("username", $username, time() + 3600*8); // Ważność: 8 godzin
 
         header("Location: index.php");
     } else {
