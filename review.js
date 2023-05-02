@@ -29,7 +29,7 @@ function updateCode() {
     const versionIndex = versionSlider.value;
     const versionTimestamp = versions[versionIndex];
     const versionDate = new Date(versionTimestamp * 1000);
-    const formattedDate = versionDate.toLocaleDateString("pl-PL");
+    const formattedDate = formatDate(versionDate);
     const formattedTime = versionDate.toLocaleTimeString("pl-PL");
 
     $.ajax({
@@ -39,11 +39,21 @@ function updateCode() {
             student_id: student_id,
             timestamp: versionTimestamp,
         },
+        dataType: "json",
         success: function (response) {
-            codeContainer.textContent = response;
-            versionDisplay.textContent = `Version ${Number(versionIndex) + 1} of ${versions.length} (${formattedDate} ${formattedTime})`;
+            codeContainer.textContent = response.content;
+            const ip = response.ip;
+            versionDisplay.textContent = `Version ${Number(versionIndex) + 1} of ${versions.length} (${formattedDate} ${formattedTime}, IP: ${ip})`;
         },
     });
+}
+
+function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}.${month}.${year}`;
 }
 
 versionSlider.addEventListener("input", updateCode);

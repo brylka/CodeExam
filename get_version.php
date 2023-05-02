@@ -6,7 +6,23 @@
         $file_path = "work/{$student_id}/" . $timestamp;
 
         if (file_exists($file_path)) {
-            echo file_get_contents($file_path);
+            $content = file_get_contents($file_path);
+
+            // Usuwanie ostatniej linii związanej z adresem IP
+            $content_lines = explode("\n", $content);
+            $ip_line = array_pop($content_lines);
+            $content = implode("\n", $content_lines);
+
+            // Wyciąganie adresu IP z ostatniej linii
+            preg_match('/\/\/ IP: (.*)/', $ip_line, $ip_matches);
+            $ip = $ip_matches[1];
+
+            // Zwracanie danych jako JSON
+            $version_data = [
+                'content' => $content,
+                'ip' => $ip,
+            ];
+            echo json_encode($version_data);
         } else {
             http_response_code(404);
             echo "File not found.";

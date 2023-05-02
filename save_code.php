@@ -11,5 +11,10 @@
         file_put_contents("{$studentPath}/current.php", $code);
 
         $timestamp = time();
-        file_put_contents("{$studentPath}/{$timestamp}", $code);
+
+        // Zapisywanie adresu IP
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $code_with_ip = $code . "\n\n// IP: {$ip}";
+
+        file_put_contents("{$studentPath}/{$timestamp}", $code_with_ip);
     }

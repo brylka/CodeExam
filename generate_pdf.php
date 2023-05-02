@@ -17,9 +17,20 @@
     {
         $file_path = 'work/' . $username . '/' . $timestamp;
         if (file_exists($file_path)) {
-            return file_get_contents($file_path);
+            $content = file_get_contents($file_path);
+
+            // Usuwanie ostatniej linii związanej z adresem IP
+            $content_lines = explode("\n", $content);
+            $ip_line = array_pop($content_lines);
+            $code = implode("\n", $content_lines);
+
+            // Wyciąganie adresu IP z ostatniej linii
+            preg_match('/\/\/ IP: (.*)/', $ip_line, $ip_matches);
+            $ip = $ip_matches[1];
+
+            return ['ip' => $ip, 'code' => $code];
         }
-        return '';
+        return ['ip' => '', 'code' => ''];
     }
 
     $studentUsername = isset($_GET['username']) ? $_GET['username'] : null;
@@ -71,10 +82,12 @@
             $pdf->AddPage();
             $versionDate = new DateTime("@$timestamp");
             $formattedDate = $versionDate->format('Y-m-d H:i:s');
-            $content = getVersionContent($timestamp, $studentUsername);
+            $content_data = getVersionContent($timestamp, $studentUsername);
+            $ip = $content_data['ip'];
+            $content = $content_data['code'];
             $content = str_replace("\t", "    ", $content);
 
-            $pdf->MultiCell(0, 4, 'Timestamp: ' . $formattedDate . "\n" . 'Content:' . "\n" . $content . "\n\n");
+            $pdf->MultiCell(0, 4, 'Timestamp: ' . $formattedDate . "\n" . 'IP: ' . $ip . "\n" . 'Content:' . "\n" . $content . "\n\n");
 
             $firstTimestamp = false;
         }
