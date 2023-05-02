@@ -15,7 +15,9 @@ $(document).ready(function () {
 
 	// Włączanie podpowiedzi dla różnych języków
 	codeEditor.on("inputRead", function onChange(editor, input) {
-		if (input.text[0] === ";" || input.text[0] === " ") {
+		const excludedChars = [";", " ", "{", "(", "}", ")", "\"", "'", ":", "[", "]", ",", ".",
+			"+", "-", "*", "/", "=", "$", "%", "&", "|", "<", ">", "!", "?", "~", "^", "@", "`"];
+		if (excludedChars.includes(input.text[0])) {
 			return;
 		}
 		CodeMirror.commands.autocomplete(editor, null, { completeSingle: false });
@@ -71,28 +73,22 @@ $(document).ready(function () {
 		var requestUrl = '';
 
 		if (isTeacher() || loadOnceForStudent) {
-			if (selectedStudent !== "") {
-				requestUrl = 'get_code.php?username=' + selectedStudent;
-			} else {
-				return;
-			}
-		} else if (!isTeacher()) {
-			requestUrl = 'get_code.php?username=' + getUsername();
-		}
+			requestUrl = 'get_code.php?username=' + (selectedStudent !== "" ? selectedStudent : getUsername());
 
-		$.ajax({
-			type: "GET",
-			url: requestUrl,
-			success: function(response) {
-				const currentCode = codeEditor.getValue();
-				if (response !== currentCode) {
-					codeEditor.setValue(response);
+			$.ajax({
+				type: "GET",
+				url: requestUrl,
+				success: function (response) {
+					const currentCode = codeEditor.getValue();
+					if (response !== currentCode) {
+						codeEditor.setValue(response);
+					}
+				},
+				error: function () {
+					alert("An error occurred");
 				}
-			},
-			error: function() {
-				alert("An error occurred");
-			}
-		});
+			});
+		}
 	}
 
     setInterval(updateCodeFromServer, 1000);
