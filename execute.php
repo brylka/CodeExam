@@ -13,14 +13,17 @@
 		return false;
 	}
 
-    // Pobierz identyfikator ucznia
-    $student_id = isset($_POST['username']) ? $_POST['username'] : $_COOKIE['username'];
+    // Pobierz identyfikator ucznia i nazwę pliku zadania
+    //$student_id = isset($_POST['username']) ? $_POST['username'] : $_COOKIE['username'];
+    $student_id = isset($_POST['student_id']) ? $_POST['student_id'] : $_COOKIE['username'];
+    $task_file = isset($_POST['task_file']) ? $_POST['task_file'] : '';
 
     // Wczytaj kod z pliku current.php w katalogu ucznia
-    $student_directory = "work/{$student_id}";
+    $student_directory = "work/{$student_id}/" . $task_file;
     $code_file = "{$student_directory}/current.php";
 
     if (!file_exists($code_file)) {
+        echo $code_file . "<br>";
         echo "The current.php file does not exist for this student!";
         exit();
     }

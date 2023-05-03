@@ -46,6 +46,9 @@
             min-height: 50vh;
             user-select: none;
         }
+        .selected-student {
+            color: red !important;
+        }
     </style>
 </head>
 <body>
@@ -77,10 +80,25 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
                 <?php
+                $task_files = get_task_files();
+                $current_username = $_COOKIE['username'];
+
                 if (isTeacher()) {
                     $student_directories = get_student_directories();
                     foreach ($student_directories as $student_directory) {
-                        echo "<li class='nav-item'><a href='#' class='nav-link student-directory' data-student-id='{$student_directory}'>{$student_directory}</a></li>";
+                        echo "<li class='nav-item dropdown'>
+                <a class='nav-link dropdown-toggle btn btn-success studentDropdown' href='#' id='studentDropdown{$student_directory}' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>{$student_directory}</a>
+                <div class='dropdown-menu' aria-labelledby='studentDropdown{$student_directory}'>";
+                        foreach ($task_files as $task_file => $task_name) {
+                            //echo "<a href='#' class='dropdown-item student-task' data-student-id='{$student_id}' data-task-file='{$task_file}'>{$task_name}</a>";
+                            echo "<a href='#' class='dropdown-item student-task' data-student-id='{$student_directory}' data-task-file='{$task_file}'>{$task_name}</a>";
+                        }
+                        echo "  </div>
+              </li>";
+                    }
+                } else {
+                    foreach ($task_files as $task_file => $task_name) {
+                        echo "<li class='nav-item'><a href='#' class='nav-link btn btn-dark student-task' data-student-id='{$current_username}' data-task-file='{$task_file}'>{$task_name}</a> </li> ";
                     }
                 }
                 ?>
@@ -128,9 +146,14 @@
                 </div>
             </div>
             <div class="col-md-3">
+                <input type="hidden" id="taskFileName" />
+                <?php if (isTeacher()): ?>
+                    <input type="text" id="taskTitle" class="form-control mb-2" placeholder="Tytuł zadania" />
+                <?php endif; ?>
                 <div id="taskContent" contenteditable="<?php echo isTeacher() ? 'true' : 'false'; ?>"></div>
                 <?php if (isTeacher()): ?>
                     <button id="save-task" class="btn btn-primary mt-2">Zapisz zadanie</button>
+                    <button id="create-task" class="btn btn-primary mt-2 ml-2">Nowe zadanie</button>
                 <?php endif; ?>
             </div>
         </div>
@@ -154,6 +177,23 @@
             closedir($handle);
         }
         return $student_directories;
+    }
+
+    function get_task_files() {
+        $task_dir = 'tasks';
+        $task_files = [];
+
+        if ($handle = opendir($task_dir)) {
+            while (false !== ($entry = readdir($handle))) {
+                if ($entry != "." && $entry != ".." && !is_dir("{$task_dir}/{$entry}")) {
+                    $file_content = file("{$task_dir}/{$entry}");
+                    $task_name = trim($file_content[0]);
+                    $task_files[$entry] = $task_name;
+                }
+            }
+            closedir($handle);
+        }
+        return $task_files;
     }
 
     function isTeacher() {

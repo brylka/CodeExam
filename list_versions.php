@@ -5,11 +5,12 @@
 
     // Pobierz identyfikator wybranego ucznia
     $student_id = isset($_GET['student_id']) ? $_GET['student_id'] : null;
+    $task_file = isset($_GET['task_file']) ? $_GET['task_file'] : null;
 
     // Upewnij się, że $student_id został ustawiony
     if ($student_id) {
         // Zmieniamy katalog na katalog ucznia
-        $dir = "work/{$student_id}/";
+        $dir = "work/{$student_id}/{$task_file}/";
         $files = array_diff(scandir($dir), array(".", "..", "current.php"));
 
         $timestamps = array_filter($files, function ($file) {

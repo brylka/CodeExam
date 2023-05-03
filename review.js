@@ -8,13 +8,18 @@ function getStudentId() {
     return document.getElementById("reviewTitle").dataset.studentId;
 }
 
+function getTaskFile() {
+    return document.getElementById("reviewTitle").dataset.taskFile;
+}
+
 function loadVersions() {
     const student_id = getStudentId();
+    const task_file = getTaskFile();
 
     $.ajax({
         type: "GET",
         url: "list_versions.php",
-        data: { student_id: student_id },
+        data: { student_id: student_id, task_file: task_file },
         dataType: "json",
         success: function (response) {
             versions = response;
@@ -31,6 +36,7 @@ function updateCode() {
     const versionDate = new Date(versionTimestamp * 1000);
     const formattedDate = formatDate(versionDate);
     const formattedTime = versionDate.toLocaleTimeString("pl-PL");
+    const task_file = getTaskFile();
 
     $.ajax({
         type: "GET",
@@ -38,6 +44,7 @@ function updateCode() {
         data: {
             student_id: student_id,
             timestamp: versionTimestamp,
+            task_file: task_file,
         },
         dataType: "json",
         success: function (response) {

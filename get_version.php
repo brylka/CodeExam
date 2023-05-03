@@ -5,9 +5,10 @@
 
     $student_id = isset($_GET['student_id']) ? $_GET['student_id'] : null;
     $timestamp = isset($_GET['timestamp']) ? $_GET['timestamp'] : null;
+    $task_file = isset($_GET['task_file']) ? $_GET['task_file'] : null;
 
     if ($student_id && $timestamp && preg_match("/^\d+$/", $timestamp)) {
-        $file_path = "work/{$student_id}/" . $timestamp;
+        $file_path = "work/{$student_id}/{$task_file}/" . $timestamp;
 
         if (file_exists($file_path)) {
             $content = file_get_contents($file_path);

@@ -8,7 +8,8 @@
     // Funkcja zwracająca tablicę z timestampami wersji
     function getVersionsTimestamps($username)
     {
-        $dir = "work/" . $username . "/";
+        $task_file = isset($_GET['task_file']) ? $_GET['task_file'] : null;
+        $dir = "work/" . $username . "/" . $task_file . "/";
         $files = array_diff(scandir($dir), array(".", "..", "current.php"));
 
         $timestamps = array_filter($files, function ($file) {
@@ -54,8 +55,10 @@
         $pdf->SetFont('Courier', '', 8);
 
         // Dodać treść zadania
-        if (file_exists('task_content.txt')) {
-            $taskContent = "Treść zadania:\n\n" . file_get_contents('task_content.txt');
+        $task_file = isset($_GET['task_file']) ? $_GET['task_file'] : null;
+        $task_file = 'tasks/' . $task_file;
+        if (file_exists($task_file)) {
+            $taskContent = "Treść zadania:\n\n" . file_get_contents($task_file);
         } else {
             $taskContent = "Treść zadania:\n\nNie można wczytać pliku z treścią zadania.";
         }

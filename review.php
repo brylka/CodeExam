@@ -4,6 +4,7 @@
     redirectIfNotTeacher();
 
     $student_id = isset($_GET['student_id']) ? $_GET['student_id'] : null;
+    $task_file = isset($_GET['task_file']) ? $_GET['task_file'] : null;
 ?><!DOCTYPE html>
 <html>
 <head>
@@ -54,7 +55,7 @@
 
 
     <div class="container">
-        <h1 id="reviewTitle" data-student-id="<?php echo htmlspecialchars($student_id); ?>"></h1>
+        <h1 id="reviewTitle" data-student-id="<?php echo htmlspecialchars($student_id); ?>" data-task-file="<?php echo htmlspecialchars($task_file); ?>"></h1>
         <div>
             <input type="range" min="0" max="0" value="0" class="slider" id="versionSlider">
             <span id="versionDisplay"></span>
